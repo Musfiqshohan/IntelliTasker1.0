@@ -52,7 +52,8 @@ public class HomePage extends AppCompatActivity {
         logOut.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
-                Intent i = new Intent(getApplicationContext(), PageZero.class);
+                Intent i = new Intent(getApplicationContext(), SignIn.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(i);
 
 

@@ -68,7 +68,7 @@ public class SuggestTime extends AppCompatActivity {
                         "Position :" + itemPosition + "  ListItem : " + itemValue, Toast.LENGTH_LONG)
                         .show();
                 DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-                mDatabase.child("notification").child(receiver).child(sender).setValue(sendername + " wants to meet you" + " Time : " + itemValue);
+                mDatabase.child("notification").child(receiver).child(sender).setValue(sendername + " wants to meet you" + " within : " + itemValue);
 
             }
 
@@ -91,6 +91,8 @@ public class SuggestTime extends AppCompatActivity {
         seeFreeSlots.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                availableList.clear();
+                adapter.notifyDataSetChanged();
                 processTime();
 
 
@@ -248,7 +250,7 @@ public class SuggestTime extends AppCompatActivity {
         } catch (Exception e) {
 
         } finally {
-            availableList.add("Unspecified");
+            availableList.add("unspecified time");
 
             adapter.notifyDataSetChanged();
         }

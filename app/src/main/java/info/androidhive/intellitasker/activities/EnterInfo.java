@@ -59,6 +59,8 @@ public class EnterInfo extends AppCompatActivity {
                 mDatabase.child("users").child(finalUid).setValue(person);
 
                 Intent i = new Intent(getApplicationContext(), HomePage.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
                 startActivity(i);
 
 
@@ -69,6 +71,7 @@ public class EnterInfo extends AppCompatActivity {
         skipButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent i = new Intent(getApplicationContext(), HomePage.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(i);
             }
         });
