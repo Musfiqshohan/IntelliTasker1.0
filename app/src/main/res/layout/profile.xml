@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_weight="2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/person_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+
+            android:textStyle="bold"
+            android:textSize="25dp"
+            android:text="Name : " />
+
+
+        <TextView
+            android:id="@+id/person_occupation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:textSize="25dp"
+            android:text="Occupation : " />
+
+
+        <TextView
+            android:id="@+id/person_institution"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:textSize="25dp"
+            android:text="Institution : " />
+
+
+        <TextView
+            android:id="@+id/person_study"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:textSize="25dp"
+            android:text="Study : " />
+
+
+        <TextView
+            android:id="@+id/person_interests"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:textSize="25dp"
+            android:text="Interests : " />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Show Free Slots" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="meet"
+            android:id="@+id/meet_request" />
+
+
+    </LinearLayout>
+
+</LinearLayout>

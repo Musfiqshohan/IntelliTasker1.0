@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "256942411406",
+    "firebase_url": "https://intellitasker-38a1b.firebaseio.com",
+    "project_id": "intellitasker-38a1b",
+    "storage_bucket": "intellitasker-38a1b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:256942411406:android:3a821e4200d85078",
+        "android_client_info": {
+          "package_name": "info.androidhive.recyclerview"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "256942411406-ofnk0h35er9ugagb8ldb5qtg4ii3gd43.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "info.androidhive.recyclerview",
+            "certificate_hash": "f740b24fd12bfd82d4c9ee9629ce7203826dc7db"
+          }
+        },
+        {
+          "client_id": "256942411406-p4hvev0r8kn5ptj9aik9vv0355kd83t0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASkQDjQzRuwM5zZAtgv7YBqbtFtD1o_X8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "256942411406-p4hvev0r8kn5ptj9aik9vv0355kd83t0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
