@@ -61,12 +61,14 @@
 
         <Button
             android:id="@+id/ei_button"
+            android:backgroundTint="#5aaeae"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Enter Info" />
 
         <Button
             android:id="@+id/ei_skip"
+            android:backgroundTint="#5aaeae"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="skip" />

@@ -22,11 +22,15 @@ public class HomePage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
+        // ititializing varibales
+
         meetFriend = (Button) findViewById(R.id.MeetAFriend);
         notificationButton = (Button) findViewById(R.id.checkNotifications);
         logOut = (Button) findViewById(R.id.CheckInbox);
         setting_icon = (ImageButton) findViewById(R.id.settings_icon);
         setting_icon.setImageResource(R.drawable.aa);
+
+        // listeners for buttons
 
         notificationButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

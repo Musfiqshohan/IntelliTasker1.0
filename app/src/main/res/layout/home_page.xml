@@ -55,6 +55,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="My Tasks"
+            android:backgroundTint="#b0e0e6"
             android:textSize="30dp" />
 
         <Button
@@ -62,6 +63,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:backgroundTint="#b0e0e6"
             android:text="Group Tasks"
             android:textSize="30dp" />
     </LinearLayout>
@@ -78,6 +80,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:backgroundTint="#b0e0e6"
             android:text="Notifications"
             android:textSize="20dp" />
 
@@ -86,6 +89,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:backgroundTint="#b0e0e6"
             android:text="Meet a Friend"
             android:textSize="30dp" />
 
@@ -102,6 +106,7 @@
 
         <Button
             android:id="@+id/NewsFeed"
+            android:backgroundTint="#b0e0e6"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -114,6 +119,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="Log Out"
+            android:backgroundTint="#b0e0e6"
             android:textSize="30dp" />
     </LinearLayout>
 

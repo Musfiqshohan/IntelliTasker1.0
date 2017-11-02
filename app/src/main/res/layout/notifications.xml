@@ -3,8 +3,16 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Notifications"
+        android:textColor="#93836b"
+        android:textSize="45dp" />
+
     <ListView
         android:id="@+id/list"
+        android:background="@color/mild_ash"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"></ListView>
 

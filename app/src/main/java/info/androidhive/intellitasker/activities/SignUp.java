@@ -28,10 +28,11 @@ public class SignUp extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_up);
 
-
+        // initialization
         pass = (TextView) findViewById(R.id.signup_password);
         mail = (TextView) findViewById(R.id.signup_email);
         signup = (Button) findViewById(R.id.signup_signup);
+        // trying to sign up with new email and password
         signup.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 auth.createUserWithEmailAndPassword(mail.getText().toString(), pass.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {

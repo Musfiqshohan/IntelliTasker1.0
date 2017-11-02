@@ -30,7 +30,7 @@ public class ShowProfile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile);
-
+        // initialization
         name = (TextView) findViewById(R.id.person_name);
         study = (TextView) findViewById(R.id.person_study);
         occupation = (TextView) findViewById(R.id.person_occupation);
@@ -38,6 +38,7 @@ public class ShowProfile extends AppCompatActivity {
         interests = (TextView) findViewById(R.id.person_interests);
         meet = (Button) findViewById(R.id.meet_request);
 
+        // getting information from previous intent
         Bundle i = getIntent().getExtras();
 
 
@@ -53,10 +54,10 @@ public class ShowProfile extends AppCompatActivity {
         occupation.setText("Occupation : " + Occup);
         institution.setText("Instituion : " + Inst);
         interests.setText("Interests : " + Inter);
-
+        // listener for meet button
         meet.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                preparePeopleData();
+                showFreeSlotsActivity();
             }
         });
 
@@ -64,7 +65,7 @@ public class ShowProfile extends AppCompatActivity {
     }
 
 
-    private void preparePeopleData() {
+    private void showFreeSlotsActivity() {
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -72,7 +73,7 @@ public class ShowProfile extends AppCompatActivity {
         String UserID = user.getUid();
 
         Intent i = new Intent(getApplicationContext(), SuggestTime.class);
-
+        // sending sender and receiver user id for use in next activity
         i.putExtra("senderUID", UserID);
         i.putExtra("receiverUID", receiver);
 

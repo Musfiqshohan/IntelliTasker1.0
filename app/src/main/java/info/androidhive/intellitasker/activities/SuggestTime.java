@@ -1,11 +1,15 @@
 package info.androidhive.intellitasker.activities;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -15,42 +19,50 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import info.androidhive.intellitasker.R;
-import info.androidhive.intellitasker.classes.Task;
+import info.androidhive.intellitasker.Entities.Task;
 
 public class SuggestTime extends AppCompatActivity {
     String receiver = "", sender = "", sendername = "";
-
+    Calendar myCalendar = Calendar.getInstance();
+    EditText meetDate;
     List<Task> senderList = new ArrayList<>(50);
     List<Task> receiverList = new ArrayList<>(50);
 
 
-    private List<String> availableList = new ArrayList<>(50);
-    private ListView listView;
-    private ArrayAdapter<String> adapter;
-    private Button seeFreeSlots;
+    List<String> availableList = new ArrayList<>(50);
+    ListView listView;
+    ArrayAdapter<String> adapter;
+    Button seeFreeSlots;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.suggested_meet_time);
+
+        // initialization
+
         listView = (ListView) findViewById(R.id.taskList);
         seeFreeSlots = (Button) findViewById(R.id.checkFreeSlots);
         senderList.clear();
-        final Bundle i = getIntent().getExtras();
+        adapter = new ArrayAdapter<String>(this,
+                R.layout.list_item, android.R.id.text1, availableList);
 
+        listView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+        // getting data from previous intents
+
+        final Bundle i = getIntent().getExtras();
 
         sender = i.getString("senderUID");
         receiver = i.getString("receiverUID");
 
-        adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, android.R.id.text1, availableList);
-
-
-        listView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        // adding listener for listview
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -64,23 +76,45 @@ public class SuggestTime extends AppCompatActivity {
                 String itemValue = (String) listView.getItemAtPosition(position);
 
 
-                Toast.makeText(getApplicationContext(),
-                        "Position :" + itemPosition + "  ListItem : " + itemValue, Toast.LENGTH_LONG)
-                        .show();
                 DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-                mDatabase.child("notification").child(receiver).child(sender).setValue(sendername + " wants to meet you" + " within : " + itemValue);
+                mDatabase.child("notification").child(receiver).child(sender).setValue(sendername + " wants to meet you. Time -- " + itemValue + " on " + meetDate.getText().toString());
 
             }
 
         });
 
-        {
-            try {
-                prepareNotificationData();
-            } catch (Exception e) {
-            }
-        }
+        myCalendar.setTime(new Date());
 
+        meetDate = (EditText) findViewById(R.id.setMeetDate);
+        final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                // TODO Auto-generated method stub
+                myCalendar.set(Calendar.YEAR, year);
+                myCalendar.set(Calendar.MONTH, monthOfYear);
+                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                myCalendar.set(Calendar.HOUR_OF_DAY, 0);
+                myCalendar.set(Calendar.MINUTE, 0);
+                meetDate.setText(Integer.toString(myCalendar.get(Calendar.DAY_OF_MONTH)) + "/" + Integer.toString(myCalendar.get(Calendar.MONTH) + 1) + "/" + Integer.toString(myCalendar.get(Calendar.YEAR)));
+
+            }
+
+        };
+
+        meetDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // TODO Auto-generated method stub
+                new DatePickerDialog(SuggestTime.this, date, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+
+
+        // getting sender's name to show in receiver's notification menu
         try {
 
             sendername = getUserName();
@@ -91,6 +125,14 @@ public class SuggestTime extends AppCompatActivity {
         seeFreeSlots.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                // preparing tasklist for users
+                {
+                    try {
+                        prepareNotificationData();
+                    } catch (Exception e) {
+                    }
+                }
                 availableList.clear();
                 adapter.notifyDataSetChanged();
                 processTime();
@@ -102,6 +144,7 @@ public class SuggestTime extends AppCompatActivity {
 
     }
 
+    // get userame
     private String getUserName() {
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("users").child(sender).child("name");
@@ -122,7 +165,7 @@ public class SuggestTime extends AppCompatActivity {
         return sendername;
     }
 
-
+    // get tasklists from firebase
     private void prepare(Map<String, Object> users) {
 
 
@@ -167,6 +210,7 @@ public class SuggestTime extends AppCompatActivity {
 
     }
 
+    // listener for firebase
     private void prepareNotificationData() {
 
 
@@ -187,72 +231,163 @@ public class SuggestTime extends AppCompatActivity {
 
     }
 
-
+    // process the received data from firebase
     private void processTime() {
-        long currentTime = System.currentTimeMillis();
-        Date currentDate = new Date(currentTime);
+
+
+        Log.d(String.valueOf(receiverList.size()) + "sizenow", String.valueOf(senderList.size()));
+
+
+        Date from = new Date(myCalendar.getTime().getTime() + 28800000 - 3600000);
+        Date to = new Date(myCalendar.getTime().getTime() + 72000000 + 3600000);
+
+        boolean[] receiverFree = new boolean[805];
+        boolean[] senderFree = new boolean[805];
+
+        for (int i = 0; i < 720; i++) {
+            receiverFree[i] = true;
+            senderFree[i] = true;
+        }
 
 
         for (int i = 0; i < receiverList.size(); i++) {
             Task tempTask = receiverList.get(i);
 
-            if (tempTask.endTime.before(currentDate)) {
+            if (!(tempTask.endTime.before(to) && tempTask.startTime.after(from))) {
+
+
+                Log.d(tempTask.startTime.toString() + "invalid", tempTask.endTime.toString());
                 receiverList.remove(i);
+                i = 0;
             }
 
         }
 
-        Calendar calendar = Calendar.getInstance();
+        for (int i = 0; i < senderList.size(); i++) {
+            Task tempTask = senderList.get(i);
 
-        Collections.sort(receiverList, Task.TaskSorter);
-        try {
+            if (!(tempTask.endTime.before(to) && tempTask.startTime.after(from))) {
+                Log.d(tempTask.startTime.toString() + "invalid", tempTask.endTime.toString());
+                senderList.remove(i);
+                i = 0;
+            }
 
-            String available = "";
-            Task firstTask = receiverList.get(0);
-            Date start = new Date(firstTask.endTime.getTime());
+        }
 
+        for (int i = 0; i < receiverList.size(); i++) {
+            Task tempTask = receiverList.get(i);
 
-            for (int i = 1; i < receiverList.size(); i++) {
-
-                calendar.setTime(start);
-
-                int hours = calendar.get(Calendar.HOUR_OF_DAY);
-                int minutes = calendar.get(Calendar.MINUTE);
-                int day = calendar.get(Calendar.DAY_OF_MONTH);
-                int month = calendar.get(Calendar.DAY_OF_MONTH);
-                int year = calendar.get(Calendar.YEAR);
-                available += Integer.toString(hours) + ":" + Integer.toString(minutes) + "----" + Integer.toString(day) + "/" + Integer.toString(month) + "/" + Integer.toString(year);
-                available += " to ";
+            if (!(tempTask.endTime.before(to) && tempTask.startTime.after(from))) {
 
 
-                Task tempTask = receiverList.get(i);
-                Date end = new Date(tempTask.startTime.getTime());
-                calendar.setTime(end);
+                Log.d(tempTask.startTime.toString() + "invalid", tempTask.endTime.toString());
+                receiverList.remove(i);
+                i = 0;
+            }
+
+        }
+
+        for (int i = 0; i < senderList.size(); i++) {
+            Task tempTask = senderList.get(i);
+
+            if (!(tempTask.endTime.before(to) && tempTask.startTime.after(from))) {
+
+                Log.d(tempTask.startTime.toString() + "invalid", tempTask.endTime.toString());
+                senderList.remove(i);
+                i = 0;
+            }
+
+        }
+
+        Log.d(String.valueOf(receiverList.size()) + "size", String.valueOf(senderList.size()));
+
+        for (int i = 0; i < receiverList.size(); i++) {
+            Task tempTask = receiverList.get(i);
+
+            int start = (int) ((tempTask.startTime.getTime() - from.getTime()) / 60000);
+
+            int end = (int) ((tempTask.endTime.getTime() - from.getTime()) / 60000);
 
 
-                hours = calendar.get(Calendar.HOUR_OF_DAY);
-                minutes = calendar.get(Calendar.MINUTE);
-                day = calendar.get(Calendar.DAY_OF_MONTH);
-                month = calendar.get(Calendar.DAY_OF_MONTH);
-                year = calendar.get(Calendar.YEAR);
-                available += Integer.toString(hours) + ":" + Integer.toString(minutes) + "----" + Integer.toString(day) + "/" + Integer.toString(month) + "/" + Integer.toString(year);
-                if (end.getTime() - start.getTime() >= 1200000) {
-                    availableList.add(available);
-                    adapter.notifyDataSetChanged();
-                }
-                start = tempTask.endTime;
-                available = "";
+            for (int time = start; time <= end; time++) {
+                receiverFree[time] = false;
+            }
+        }
 
 
+        for (int i = 0; i < senderList.size(); i++) {
+
+            Task tempTask = senderList.get(i);
+
+            int start = (int) ((tempTask.startTime.getTime() - from.getTime() - 3600000) / 60000);
+
+            int end = (int) ((tempTask.endTime.getTime() - from.getTime() - 3600000) / 60000);
+
+            for (int time = start; time <= end; time++) {
+                senderFree[time] = false;
             }
 
 
-        } catch (Exception e) {
+        }
 
-        } finally {
-            availableList.add("unspecified time");
 
-            adapter.notifyDataSetChanged();
+        for (int i = 0; i < 720; i++) {
+
+            int cnt = 0;
+            if (receiverFree[i] == true && senderFree[i] == true && i < 720)
+
+            {
+                int st = i;
+                while (receiverFree[i] == true && senderFree[i] == true && i < 720) {
+
+                    cnt++;
+                    i++;
+
+                }
+                if (cnt > 20) {
+
+                    int en = i;
+
+                    long freeFrom = myCalendar.getTime().getTime() + (480 + st) * 60 * 1000;
+                    long freeTill = myCalendar.getTime().getTime() + (480 + en) * 60 * 1000;
+
+                    Log.d(String.valueOf(st) + " fromto ", String.valueOf(en));
+
+
+                    Calendar tempCal = Calendar.getInstance();
+
+                    Date fstart = new Date(freeFrom);
+                    Date fend = new Date(freeTill);
+
+
+                    tempCal.setTime(fstart);
+
+                    int min = tempCal.get(Calendar.MINUTE);
+                    int hour = tempCal.get(Calendar.HOUR_OF_DAY);
+
+                    String formattedHour = String.format("%02d", hour);
+                    String formattedMin = String.format("%02d", min);
+
+                    String slot = formattedHour + ":" + formattedMin;
+
+                    tempCal.setTime(fend);
+
+                    min = tempCal.get(Calendar.MINUTE);
+                    hour = tempCal.get(Calendar.HOUR_OF_DAY);
+
+
+                    formattedHour = String.format("%02d", hour);
+                    formattedMin = String.format("%02d", min);
+
+                    slot += " to " + formattedHour + ":" + formattedMin;
+
+
+                    availableList.add(slot);
+                    adapter.notifyDataSetChanged();
+
+
+                }
+            }
         }
 
 

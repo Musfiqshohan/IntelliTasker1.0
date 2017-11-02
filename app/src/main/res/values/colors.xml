@@ -4,5 +4,9 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="year">#999999</color>
+    <color name="background">#fae0af</color>
+    <color name="textcolor">#45222e</color>
+    <color name="mild_ash">#e7dfe0</color>
     <color name="title">#222222</color>
+    <color name="chocolate">#a96262</color>
 </resources>

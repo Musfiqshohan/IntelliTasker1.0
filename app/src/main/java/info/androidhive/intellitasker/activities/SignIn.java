@@ -28,7 +28,7 @@ public class SignIn extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_in);
 
-        //       FirebaseAuth.getInstance().signOut();
+        // initialization
 
         passWord = (TextView) findViewById(R.id.si_password);
         eMail = (TextView) findViewById(R.id.si_email);
@@ -37,32 +37,40 @@ public class SignIn extends AppCompatActivity {
 
         signin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                auth.signInWithEmailAndPassword(eMail.getText().toString(), passWord.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
 
-                            Intent i = new Intent(getApplicationContext(), HomePage.class);
-                            startActivity(i);
+                String email = eMail.getText().toString();
+                String password = passWord.getText().toString();
+                // trying to log in
+                if (email.length() > 0 && password.length() > 0) {
+                    auth.signInWithEmailAndPassword(eMail.getText().toString(), passWord.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
 
-                        } else {
-                            Toast.makeText(getApplicationContext(), "Login Failed. Check Email and Password", Toast.LENGTH_LONG);
+                                Intent i = new Intent(getApplicationContext(), HomePage.class);
+                                startActivity(i);
+
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Login Failed. Check Email and Password", Toast.LENGTH_LONG);
+                            }
                         }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
 
-                        Toast.makeText(getApplicationContext(), "Login Failed. Check Email and Password", Toast.LENGTH_LONG);
+                            Toast.makeText(getApplicationContext(), "Login Failed. Check Email and Password", Toast.LENGTH_LONG);
 
-                    }
-                });
+                        }
+                    });
+                }
             }
         });
 
 
         signup.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+
+                // open new account if not logged in already
 
                 Intent i = new Intent(getApplicationContext(), SignUp.class);
                 startActivity(i);

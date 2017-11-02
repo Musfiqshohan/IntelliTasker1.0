@@ -9,7 +9,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import info.androidhive.intellitasker.R;
-import info.androidhive.intellitasker.classes.People;
+import info.androidhive.intellitasker.Entities.People;
 
 public class PeoplesAdapter extends RecyclerView.Adapter<PeoplesAdapter.MyViewHolder> {
 

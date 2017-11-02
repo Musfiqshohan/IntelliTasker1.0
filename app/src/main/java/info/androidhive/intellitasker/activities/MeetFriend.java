@@ -27,7 +27,7 @@ import info.androidhive.intellitasker.R;
 import info.androidhive.intellitasker.adapters_designer.DividerItemDecoration;
 import info.androidhive.intellitasker.adapters_designer.PeoplesAdapter;
 import info.androidhive.intellitasker.adapters_designer.RecyclerTouchListener;
-import info.androidhive.intellitasker.classes.People;
+import info.androidhive.intellitasker.Entities.People;
 
 /**
  * Created by samiul on 9/27/17.
@@ -46,6 +46,8 @@ public class MeetFriend extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.meet_a_friend);
+        // inititalizing varibales
+
         recyclerView = (RecyclerView) findViewById(R.id.meet_friend_recycler_view);
         searchButton = (Button) findViewById(R.id.meet_friend_search_button);
         searchText = (TextView) findViewById(R.id.meet_friend_search_text);
@@ -59,14 +61,14 @@ public class MeetFriend extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(recyclerViewAdapter);
 
-
+        // listener for search items
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
                 People people = searchList.get(position);
                 Toast.makeText(getApplicationContext(), people.getName() + " is selected!", Toast.LENGTH_SHORT).show();
                 Intent i = new Intent(getApplicationContext(), ShowProfile.class);
-
+                // putting information to show in profile
                 i.putExtra("Name", people.getName());
                 i.putExtra("Occupation", people.getOccupation());
                 i.putExtra("Interests", people.getInterests());
@@ -86,11 +88,13 @@ public class MeetFriend extends AppCompatActivity {
             public void onClick(View v) {
                 searchList.clear();
                 recyclerViewAdapter.notifyDataSetChanged();
-                showSearchResult();
+                if (searchText.getText().toString().length() > 0) {
+                    showSearchResult();
+                }
             }
         });
 
-
+// retreiving all user information from firebase
         preparePeopleData();
 
 
@@ -104,8 +108,7 @@ public class MeetFriend extends AppCompatActivity {
 
             //Get user map
             Map singleUser = (Map) entry.getValue();
-            //Get phone field and append to list
-
+// constructing People object from map
             People pe = new People();
             pe.getParsedValues(singleUser);
             pe.setId(entry.getKey());
@@ -113,10 +116,11 @@ public class MeetFriend extends AppCompatActivity {
 
 
         }
-        searchText.setText(Integer.toString(peopleList.size()));
+
 
     }
 
+    // for loading all people data
     private void preparePeopleData() {
 
 
@@ -138,6 +142,7 @@ public class MeetFriend extends AppCompatActivity {
 
     }
 
+    // show search result by the chosen category
     private void showSearchResult() {
         String searchingFor = searchText.getText().toString();
         String searchBy = spinner.getSelectedItem().toString();

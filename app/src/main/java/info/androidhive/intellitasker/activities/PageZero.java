@@ -19,11 +19,14 @@ public class PageZero extends AppCompatActivity {
 
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
+        // check if user is logged in
+        // if logged in then go directly to homepage
         if (user != null) {
             Intent i = new Intent(getApplicationContext(), HomePage.class);
             startActivity(i);
-        } else {
+        }
+        // if not logged in then log in
+        else {
             Intent i = new Intent(getApplicationContext(), SignIn.class);
             startActivity(i);
         }

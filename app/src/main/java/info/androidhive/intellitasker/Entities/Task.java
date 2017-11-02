@@ -1,4 +1,4 @@
-package info.androidhive.intellitasker.classes;
+package info.androidhive.intellitasker.Entities;
 
 import java.util.Comparator;
 import java.util.Date;

@@ -2,14 +2,10 @@ package info.androidhive.intellitasker.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -19,7 +15,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +26,9 @@ import info.androidhive.intellitasker.R;
 
 public class ShowNotification extends AppCompatActivity {
 
+    private String senderID = "";
     private List<String> notificationList = new ArrayList<>(50);
+    private List<String> receiverIDList = new ArrayList<>(50);
     private ListView listView;
     private ArrayAdapter<String> adapter;
 
@@ -35,15 +36,20 @@ public class ShowNotification extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.notifications);
+        // initialization
         listView = (ListView) findViewById(R.id.list);
         notificationList.clear();
+        senderID = getUserID();
 
 
         adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, android.R.id.text1, notificationList);
+                R.layout.list_item, android.R.id.text1, notificationList);
 
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+
+        // listener for listview
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -51,13 +57,47 @@ public class ShowNotification extends AppCompatActivity {
                                     int position, long id) {
 
                 int itemPosition = position;
+                //16:31 to 20:00
 
                 String itemValue = (String) listView.getItemAtPosition(position);
 
 
-                Toast.makeText(getApplicationContext(),
-                        "Position :" + itemPosition + "  ListItem : " + itemValue, Toast.LENGTH_LONG)
-                        .show();
+                String[] div = itemValue.split(" -- ");
+                itemValue = div[1];
+
+                String[] dateandtime = itemValue.split(" on ");
+                String meetingDate = "-" + dateandtime[1];
+                itemValue = dateandtime[0];
+
+
+                String[] fromto = itemValue.split(" to ");
+                String from = fromto[0];
+                String to = fromto[1];
+
+                SimpleDateFormat parser = new SimpleDateFormat("HH:mm-dd/MM/yyyy");
+
+
+                Date TimeFrom = null;
+
+                try {
+                    TimeFrom = parser.parse(from + meetingDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                Date TimeTo = null;
+
+                try {
+                    TimeTo = parser.parse(to + meetingDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                String addTaskTo = receiverIDList.get(position);
+
+                DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+                mDatabase.child("tasks").child(addTaskTo).child(senderID).setValue(String.valueOf(TimeFrom.getTime()) + "#" + String.valueOf(TimeTo.getTime()));
+                mDatabase.child("tasks").child(senderID).child(addTaskTo).setValue(String.valueOf(TimeFrom.getTime()) + "#" + String.valueOf(TimeTo.getTime()));
 
             }
 
@@ -69,7 +109,7 @@ public class ShowNotification extends AppCompatActivity {
 
     }
 
-
+    // add notifications for current user
     private void prepare(Map<String, Object> users) {
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -85,7 +125,7 @@ public class ShowNotification extends AppCompatActivity {
 
                     String key = entryy.getKey();
                     String task = (String) entryy.getValue();
-
+                    receiverIDList.add(key);
                     notificationList.add(task);
                     adapter.notifyDataSetChanged();
 
@@ -98,6 +138,7 @@ public class ShowNotification extends AppCompatActivity {
 
     }
 
+    // retreive notifications from firebase
     private void prepareNotificationData() {
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("notification");
@@ -117,4 +158,9 @@ public class ShowNotification extends AppCompatActivity {
 
     }
 
+
+    private String getUserID() {
+
+        return FirebaseAuth.getInstance().getCurrentUser().getUid();
+    }
 }

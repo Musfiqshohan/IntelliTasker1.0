@@ -13,7 +13,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import info.androidhive.intellitasker.R;
-import info.androidhive.intellitasker.classes.People;
+import info.androidhive.intellitasker.Entities.People;
 
 public class EnterInfo extends AppCompatActivity {
 
@@ -25,6 +25,8 @@ public class EnterInfo extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.enter_information);
+
+        //initializing variables
         enterInfoButton = (Button) findViewById(R.id.ei_button);
         skipButton = (Button) findViewById(R.id.ei_skip);
 
@@ -33,6 +35,9 @@ public class EnterInfo extends AppCompatActivity {
         occupation = (TextView) findViewById(R.id.ei_occupation);
         institution = (TextView) findViewById(R.id.ei_institution);
         interests = (TextView) findViewById(R.id.ei_interests);
+
+        //getting user id to store in firebase
+
         String uid = "";
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -42,9 +47,11 @@ public class EnterInfo extends AppCompatActivity {
 
         final String finalUid = uid;
 
+        // listener for button
         enterInfoButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
+                // retreiving data from textbox
 
                 String n = name.getText().toString();
                 String oc = occupation.getText().toString();
@@ -57,7 +64,7 @@ public class EnterInfo extends AppCompatActivity {
 
                 DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
                 mDatabase.child("users").child(finalUid).setValue(person);
-
+                // starting homepage
                 Intent i = new Intent(getApplicationContext(), HomePage.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
@@ -70,6 +77,7 @@ public class EnterInfo extends AppCompatActivity {
 
         skipButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                // starting homepage without storing personal data for anonymity
                 Intent i = new Intent(getApplicationContext(), HomePage.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(i);
